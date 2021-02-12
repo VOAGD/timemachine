@@ -18,7 +18,7 @@ class notyetdecided:
             finally:        #not sure about this, load_account() twice works but throws a warning in jupyter
                 _providers=IBMQ.load_account()
             providers1=[i for i in dir(_providers.backends) if 'ibmq' in i]
-            _f=max(providers1,key=len)
+#            _f=max(providers1,key=len)
             print('\nAvailable systems for this account: \n')
 #            print('\n|{0}||-----||'.format(str(-)*int(_f),))
             for _ in providers1:
