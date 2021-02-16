@@ -5,7 +5,7 @@ from argparse import RawTextHelpFormatter
 import sys
 from colorama import Fore,Style,Back,init
 from configparser import ConfigParser
-from qiskit.backends.jobstatus import JOB_FINAL_STATES
+#from qiskit.backends.jobstatus import JOB_FINAL_STATES
 import time
 init(autoreset=False)
 '''
@@ -63,16 +63,16 @@ class notyetdecided:
                     #    if _providers.get_backend(_).configuration().n_qubits>=4:
                     _filteredproviders=[_ for _ in _providers.backends(simulator=False).__iter__() if _providers.get_backend(str(_)).configuration().n_qubits>=4]
                     #backend0=providers.ibmq.least_busy(_providers.backends(simulator=False))
-                    backend0=providers.ibmq.least_busy(_filteredproviders)
-                    print('\nLeast busy system: {0}{1}{2}\n'.format(Fore.GREEN,backend0.name(),Fore.RESET))
+                    backend0=providers.ibmq.least_busy(_filteredproviders).name()
+                    print('\nLeast busy system: {0}{1}{2}\n'.format(Fore.GREEN,backend0,Fore.RESET))
                     backend=_providers.get_backend(backend0)
                 if needsystem:
                     backend=_providers.get_backend(system)
-            except QiskitBackendNotFoundError:  #don't know the error :(
-                print('[{0}!{1}]Error while selecting backend.'.format(Fore.Red,Fore.Reset))
+            except:  #don't know the error :(
+                print('[{0}!{1}]Error while selecting backend.'.format(Fore.RED,Fore.Reset))
         else:
             backend=BasicAer.get_backend('qasm_simulator')
-        print('Backend selected: {0}{1} ({2}){3}'.format(Fore.LIGHTBLUE_EX,backend.name(),backend.configuration().n_qubits,Fore.RESET))
+        print('Backend selected: {0}{1} ({2}q){3}'.format(Fore.LIGHTBLUE_EX,backend.name(),backend.configuration().n_qubits,Fore.RESET))
         return backend;
 
 #y=notyetdecided(False,'024257bbd2ae5845824e3650cd45561fca6cdff0284dc34870113b886144a3ded1c691a8d263d37fb3e5b282a5a5bcdf4573296e632221992acf75cfabb1f65c').setup_systems()
@@ -122,6 +122,6 @@ while job_status not in JOB_FINAL_STATES:
     time.sleep(10)
     job_status = job.status()'''
 
-def QRNG():
+#def QRNG():
 
 runtime_mode()
