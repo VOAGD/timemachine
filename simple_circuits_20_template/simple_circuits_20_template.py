@@ -29,9 +29,9 @@ def simple_circuits_20(angle):
     # Step 3 : Run the qnode
     prob = rotation_circuit(angle)
     # prob = ?
+    return prob[0]
 
     # QHACK #
-    return prob[0]
 
 
 if __name__ == "__main__":
