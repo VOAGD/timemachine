@@ -39,10 +39,10 @@ def gradient_200(weights, dev):
     gradient = np.zeros([5], dtype=np.float64)
     hessian = np.zeros([5, 5], dtype=np.float64)
     
-    def PST(qnode, w, i):
+    def PST(w, i):
         shifted_g = w.copy()
         shifted_g[i] += np.pi/2
-        pst_g_plus = qnode(shifted_g)
+        pst_g_plus = circuit(shifted_g)
         
         shifted_g[i] -= np.pi
         pst_g_minus = circuit(shifted_g)
@@ -63,6 +63,9 @@ def gradient_200(weights, dev):
     for i in range(len(hessian)):
             for j in range(len(hessian[i])):
                 hessian[i][j] = second_PST(weights, i, j)
+    
+    for k in range(len(gradient)):
+            gradient[k] = PST(weights, k)
 
     
     return gradient, hessian, circuit.diff_options["method"]
