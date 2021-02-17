@@ -29,38 +29,58 @@ def find_max_independent_set(graph, params):
     """
 
     max_ind_set = []
-
+    
     # QHACK #
     
-    cost_h, mixer_h = qml.qaoa.min_vertex_cover(graph, constrained=False)
+    
+    cost_h, mixer_h = qml.qaoa.max_independent_set(graph, constrained=True)
     
     def qaoa_layer(gamma, alpha):
-        qml.qaoa.cost_layer(gamma, cost_h)
         qml.qaoa.mixer_layer(alpha, mixer_h)
+        qml.qaoa.cost_layer(gamma, cost_h)
     
-    biggest = 0
-    for i in graph.edges():
-        if i[0] > biggest: biggest = i[0]
-        if i[1] > biggest: biggest = i[1]
-    
-    wires = range(biggest+1)
+    wires = range(6)
     depth = 10
 
     def circuit(params):
-        for w in wires:
-            qml.Hadamard(wires=w)
         qml.layer(qaoa_layer, depth, params[0], params[1])
     
     dev = qml.device("default.qubit", wires=wires)
+    
     @qml.qnode(dev)
     def probability_circuit(gamma, alpha):
         circuit([gamma, alpha])
         return qml.probs(wires=wires)
-
+    
+    #drawer = qml.draw(probability_circuit)
+    
+    #print(drawer(params[0], params[1]))
+    
     probs = probability_circuit(params[0], params[1])
-    from networkx.algorithms import approximation
-    max_ind_set = nx.maximal_independent_set(graph, approximation.maximum_independent_set(graph))
-    max_ind_set.sort()
+    
+    from matplotlib import pyplot as plt
+    plt.style.use("seaborn")
+    plt.bar(range(2 ** len(wires)), probs)
+    plt.show()
+    
+    index = 0
+    biggest = [0,0]
+    for i in probs:
+        if i > biggest[0]:
+            biggest[0] = i
+            biggest[1] = index
+        index += 1
+    
+    print(biggest)
+    print(nx.maximal_independent_set(graph))
+    binary_num = bin(biggest[1]).replace('0b', '')
+    print(binary_num)
+    binary_num = binary_num[::-1]
+    
+    index = 0
+    for i in str(binary_num):
+        if i == '1': max_ind_set.append(index)
+        index += 1
     
     # QHACK #
 
