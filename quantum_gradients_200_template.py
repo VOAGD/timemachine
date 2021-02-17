@@ -62,7 +62,9 @@ def gradient_200(weights, dev):
     
     for i in range(len(hessian)):
             for j in range(len(hessian[i])):
-                hessian[i][j] = second_PST(weights, i, j)
+                if hessian[i][j] == 0:
+                    hessian[i][j] = second_PST(weights, i, j)
+                    hessian[j][i] = hessian[i][j]
     
     for k in range(len(gradient)):
             gradient[k] = PST(weights, k)
