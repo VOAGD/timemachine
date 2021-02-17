@@ -57,7 +57,6 @@ def find_max_independent_set(graph, params):
         circuit([gamma, alpha])
         return qml.probs(wires=wires)
 
-
     probs = probability_circuit(params[0], params[1])
     from networkx.algorithms import approximation
     max_ind_set = nx.maximal_independent_set(graph, approximation.maximum_independent_set(graph))
