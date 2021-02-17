@@ -80,11 +80,6 @@ def run_vqe(H):
         energy = cost_fn(params)
         conv = np.abs(energy - prev_energy)
 
-        if n % 20 == 0:
-            print('Iteration = {:},  Energy = {:.8f} Ha'.format(n, energy))
-
-        if conv <= conv_tol:
-            break
     
     # Create a quantum device, set up a cost funtion and optimizer, and run the VQE.
     # (We recommend ~500 iterations to ensure convergence for this problem,
