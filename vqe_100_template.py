@@ -73,7 +73,6 @@ def run_vqe(H):
     max_iterations = 550
     conv_tol = 1e-06
     
-    print(params)
 
     for n in range(max_iterations):
         params, prev_energy = opt.step_and_cost(cost_fn, params)
