@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 import pennylane as qml
 from pennylane import numpy as np
 import sys
@@ -7,14 +6,11 @@ import sys
 def simple_circuits_20(angle):
     """The code you write for this challenge should be completely contained within this function
     between the # QHACK # comment markers.
-
     In this function:
         * Rotate the qubit around the x-axis by angle
         * Measure the probability the qubit is in the zero state
-
     Args:
         angle (float): how much to rotate a state around the x-axis
-
     Returns:
         float: the probability of of the state being in the 0 ground state
     """
@@ -22,14 +18,20 @@ def simple_circuits_20(angle):
     # QHACK #
 
     # Step 1 : initalize a device
+    dev = qml.device("default.qubit", wires=1)
 
-    # Step 2 : Create a quantum circuit and qnode
+    # Step 2 : Create a quantum circuit and qnode#
+    @qml.qnode(dev)
+    def rotation_circuit(angl):
+        qml.RX(angl, wires=0)
+        return qml.probs(0)
 
     # Step 3 : Run the qnode
+    prob = rotation_circuit(angle)
     # prob = ?
+    return prob[0]
 
     # QHACK #
-    return prob
 
 
 if __name__ == "__main__":
