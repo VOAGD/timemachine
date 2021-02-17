@@ -31,7 +31,7 @@ def find_max_independent_set(graph, params):
     max_ind_set = []
 
     # QHACK #
-    
+    '''
     cost_h, mixer_h = qml.qaoa.min_vertex_cover(graph, constrained=False)
     
     def qaoa_layer(gamma, alpha):
@@ -58,7 +58,7 @@ def find_max_independent_set(graph, params):
         return qml.probs(wires=wires)
 
 
-    probs = probability_circuit(params[0], params[1])
+    probs = probability_circuit(params[0], params[1])'''
     from networkx.algorithms import approximation
     max_ind_set = nx.maximal_independent_set(graph, approximation.maximum_independent_set(graph))
     max_ind_set.sort()
