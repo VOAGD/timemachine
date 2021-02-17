@@ -39,11 +39,7 @@ def optimize_circuit(params):
 
     # Minimize the circuit
     def cost(x):
-        #print(circuit(x))
-        #output = np.abs(circuit(x)-0.2) ** 2
-        output = circuit(x) ** 2
-        #print(output)
-        return output
+        return (circuit(x)+1) ** 2
     
     opt = qml.GradientDescentOptimizer(stepsize=0.4)     
     for i in range(100):
