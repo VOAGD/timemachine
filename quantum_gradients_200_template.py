@@ -59,6 +59,10 @@ def gradient_200(weights, dev):
         pst_nd_minus = PST(shifted_nd, j)
         
         return (pst_nd_plus - pst_nd_minus) / ( 2 * np.sin(np.pi/2))
+    
+    for i in range(len(hessian)):
+            for j in range(len(hessian[i])):
+                hessian[i][j] = second_PST(weights, i, j)
 
     
     return gradient, hessian, circuit.diff_options["method"]
