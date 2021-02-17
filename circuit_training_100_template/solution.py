@@ -39,13 +39,13 @@ def optimize_circuit(params):
 
     # Minimize the circuit
     def cost(x):
-        return variational_circuit(x) * -1
+        return (circuit(x)+1) ** 2
     
     opt = qml.GradientDescentOptimizer(stepsize=0.4)
     for i in range(100):
-        optimal_value = opt.step(cost, params)
-        print(optimal_value)
-
+        params = opt.step(cost, params)
+    
+    optimal_value = circuit(params)
     # QHACK #
 
     # Return the value of the minimized QNode
