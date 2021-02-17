@@ -36,8 +36,8 @@ def find_max_independent_set(graph, params):
     cost_h, mixer_h = qml.qaoa.max_independent_set(graph, constrained=True)
     
     def qaoa_layer(gamma, alpha):
-        qml.qaoa.mixer_layer(alpha, mixer_h)
         qml.qaoa.cost_layer(gamma, cost_h)
+        qml.qaoa.mixer_layer(alpha, mixer_h)
     
     wires = range(6)
     depth = 10
