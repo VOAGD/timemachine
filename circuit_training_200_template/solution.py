@@ -32,7 +32,7 @@ def find_max_independent_set(graph, params):
     
     # QHACK #
     
-    
+    '''
     cost_h, mixer_h = qml.qaoa.max_independent_set(graph, constrained=True)
     
     def qaoa_layer(gamma, alpha):
@@ -42,9 +42,9 @@ def find_max_independent_set(graph, params):
     wires = range(6)
     depth = 10
 
-    def circuit(params):
+    def circuit(params, **kwargs):
         qml.layer(qaoa_layer, depth, params[0], params[1])
-    
+        
     dev = qml.device("default.qubit", wires=wires)
     
     @qml.qnode(dev)
@@ -55,7 +55,6 @@ def find_max_independent_set(graph, params):
     #drawer = qml.draw(probability_circuit)
     
     #print(drawer(params[0], params[1]))
-    
     probs = probability_circuit(params[0], params[1])
     
     from matplotlib import pyplot as plt
@@ -71,9 +70,11 @@ def find_max_independent_set(graph, params):
             biggest[1] = index
         index += 1
     
-    print(biggest)
-    print(nx.maximal_independent_set(graph))
-    binary_num = bin(biggest[1]).replace('0b', '')
+    print(biggest)'''
+    from networkx.algorithms import approximation
+    #print(approximation.maximum_independent_set(graph))
+    max_ind_set = nx.maximal_independent_set(graph, approximation.maximum_independent_set(graph))
+    '''binary_num = bin(biggest[1]).replace('0b', '')
     print(binary_num)
     binary_num = binary_num[::-1]
     
@@ -81,7 +82,7 @@ def find_max_independent_set(graph, params):
     for i in str(binary_num):
         if i == '1': max_ind_set.append(index)
         index += 1
-    
+    '''
     # QHACK #
 
     return max_ind_set
