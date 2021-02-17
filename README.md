@@ -1,6 +1,3 @@
 Done:
-Simple: 20, 50
+Simple: 20, 30, 50
 Circuit Training: 100
-
-Problem:
-Simple: 30
