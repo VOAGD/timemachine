@@ -57,7 +57,7 @@ def run_vqe(H):
     # Set up a cost function
     opt = qml.GradientDescentOptimizer(stepsize=0.1)
     # Set up an optimizer
-#    max_iterations=500
+    max_iterations=500
 #    n=0
 #    while True:
 #        params = opt.step(cost_fn, params)
