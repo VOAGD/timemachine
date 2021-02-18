@@ -32,8 +32,8 @@ def natural_gradient(params):
     natural_grad = np.zeros(6)
 
     # QHACK #
-    tensor = np.zeroes([6,6])
-    gradient = np.zeroes([6,])
+    tensor = np.zeros([6,6])
+    gradient = np.zeros([6,])
     
     @qml.qnode(dev)
     def state(params):
@@ -59,10 +59,10 @@ def natural_gradient(params):
     def PST(w, i):
         shifted_g = w.copy()
         shifted_g[i] += np.pi/2
-        pst_g_plus = variational_circuit(shifted_g)
+        pst_g_plus = qnode(shifted_g)
         
         shifted_g[i] -= np.pi
-        pst_g_minus = variational_circuit(shifted_g)
+        pst_g_minus = qnode(shifted_g)
         
         return 0.5 * (pst_g_plus - pst_g_minus)
         
