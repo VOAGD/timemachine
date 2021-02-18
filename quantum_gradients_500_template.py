@@ -40,8 +40,7 @@ def natural_gradient(params):
         variational_circuit(params)
         return qml.probs()
         
-    def getTensorValue(params, i, j):
-        state = state(params)
+    def getTensorValue(params, i, j, qstate):
         
         params1 = params.copy()
         params1[i], params1[j] = params[i] + np.pi/2, params[j] + np.pi/2
@@ -55,7 +54,7 @@ def natural_gradient(params):
         params4 = params.copy()
         params4[i], params4[j] = params[i] - np.pi/2, params[j] - np.pi/2
         
-        return (1/8)*(-np.abs(np.dot(state.conj().T, state(params1)))**2 + np.abs(np.dot(state.conj().T, state(params2)))**2 + np.abs(np.dot(state.conj().T, state(params3)))**2 - np.abs(np.dot(state.conj().T, state(params4)))**2)
+        return (1/8)*(-np.abs(np.dot(qstate.conj().T, state(params1)))**2 + np.abs(np.dot(qstate.conj().T, state(params2)))**2 + np.abs(np.dot(qstate.conj().T, state(params3)))**2 - np.abs(np.dot(qstate.conj().T, state(params4)))**2)
     
     def PST(w, i):
         shifted_g = w.copy()
@@ -67,9 +66,11 @@ def natural_gradient(params):
         
         return 0.5 * (pst_g_plus - pst_g_minus)
         
+    qstate = state(params)
+    
     for i in range(len(tensor)):
         for j in range(len(tensor)):
-            tensor[i][j] = getTensorValue(params, i, j)
+            tensor[i][j] = getTensorValue(params, i, j, qstate)
             
     for k in range(len(params)):
         gradient[k] = PST(params, i)
