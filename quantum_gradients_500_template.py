@@ -32,13 +32,16 @@ def natural_gradient(params):
     natural_grad = np.zeros(6)
 
     # QHACK #
+    def probabs(params, i):
+        variational_circuit(params)
+        return qml.probs(i)
+    
     def state(params):
         qstate = np.zeros([8,])
         
-        variational_circuit(params)
-        prob0 = qml.probs(0)
-        prob1 = qml.probs(1)
-        prob2 = qml.probs(2)
+        prob0 = probabs(params, 0)
+        prob1 = probabs(params, 1)
+        prob2 = probabs(params, 2)
         
         index = 0
         for i in range(len(prob0)):
