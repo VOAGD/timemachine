@@ -32,13 +32,21 @@ def natural_gradient(params):
     natural_grad = np.zeros(6)
 
     # QHACK #
-    tensor = np.zeros([6,6])
-    gradient = np.zeros([6,])
-    
-    @qml.qnode(dev)
     def state(params):
+        qstate = np.zeros([8,])
+        
         variational_circuit(params)
-        return qml.probs([0, 1, 2])
+        prob0 = qml.probs(0)
+        prob1 = qml.probs(1)
+        prob2 = qml.probs(2)
+        
+        index = 0
+        for i in range(len(prob0)):
+            for j in range(len(prob1)):
+                for k in range(len(prob2)):
+                    qstate[index] = prob0[i] @ prob1[j] @ prob2[k]
+        
+        return qstate
         
     def getTensorValue(params, i, j, qstate):
         
@@ -64,7 +72,7 @@ def natural_gradient(params):
         shifted_g[i] -= np.pi
         pst_g_minus = qnode(shifted_g)
         
-        return 0.5 * (pst_g_plus - pst_g_minus)
+        return (pst_g_plus - pst_g_minus)/(2* np.sin(pi/2))
         
     qstate = state(params)
     
