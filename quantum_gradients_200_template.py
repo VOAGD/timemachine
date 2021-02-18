@@ -52,22 +52,25 @@ def gradient_200(weights, dev):
     def second_PST(w, i, j):
         shifted_nd = w.copy()
         
+        shifted_nd[i] += np.pi/2
         pst_nd_plus = PST(shifted_nd, j)
         
-        shifted_nd[i] += np.pi
+        shifted_nd[i] -= np.pi
         pst_nd_minus = PST(shifted_nd, j)
         
         return (pst_nd_plus - pst_nd_minus) / ( 2 * np.sin(np.pi/2))
     
+    arbitrary = 0
     for i in range(len(hessian)):
             for j in range(len(hessian[i])):
-                if hessian[i][j] == 0:
+                if hessian[i][j] == 0 && j >= arbitrary:
                     hessian[i][j] = second_PST(weights, i, j)
                     hessian[j][i] = hessian[i][j]
+            arbitrary += 1
     
-    for k in range(len(gradient)):
-            gradient[k] = PST(weights, k)
-
+    gradients[0] = PST(weights, 0)
+    for k in range(len(gradients)):
+        gradients[k] = hessian[0][k]/gradients[0]
     
     return gradient, hessian, circuit.diff_options["method"]
 
