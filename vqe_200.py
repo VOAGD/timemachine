@@ -3,9 +3,6 @@
 import sys
 import pennylane as qml
 import numpy as np
-import time
-
-start_time = time.time()
 
 
 def variational_ansatz(params, wires):
@@ -172,5 +169,4 @@ if __name__ == "__main__":
     # Send Hamiltonian through VQE routine and output the solution
     ground_state_energy = run_vqe(H)
     print(f"{ground_state_energy:.6f}")
-    print(time.time()-start_time)
 
