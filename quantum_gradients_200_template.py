@@ -52,7 +52,6 @@ def gradient_200(weights, dev):
     def second_PST(w, i, j):
         shifted_nd = w.copy()
         
-        shifted_nd[i] += np.pi/2
         pst_nd_plus = PST(shifted_nd, j)
         
         shifted_nd[i] += np.pi
