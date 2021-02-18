@@ -30,9 +30,24 @@ def classify_data(X_train, Y_train, X_test):
 
     # QHACK #
     
-    print(X_train)
-    print(Y_train)
-    print(X_test)
+    print(X_train[0])
+    #print(Y_train)
+    #print(X_test)
+    
+    dev = qml.device('default.qubit', wires=3)
+    
+    def angles(data):
+        b0 = 2 * np.arcsin(np.sqrt(data[1] ** 2) / np.sqrt(data[0] ** 2 + data[1] ** 2 + 1e-12))
+    
+    
+    padding = 0.3 * np.ones((len(X_train), 1))
+    x_pad = np.c_[np.c_[X_train, padding], 10*np.ones((len(X_train), 1))]
+    print(x_pad[0])
+    
+    normalization = np.sqrt(np.sum(x_pad ** 2, -1))
+    x_norm = (x_pad.T / normalization).T
+    print(x_norm[0])
+    
 
     # QHACK #
 
