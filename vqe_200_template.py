@@ -3,7 +3,6 @@
 import sys
 import pennylane as qml
 import numpy as np
-import timeit
 
 
 def variational_ansatz(params, wires):
