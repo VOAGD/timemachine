@@ -38,6 +38,8 @@ def natural_gradient(params):
     def state(params):
         variational_circuit(params)
         return qml.probs()
+    A = np.array([[2,1,1],[1,1,1],[1,-1,2]])
+    Ainv = np.linalg.inv(A)
         # QHACK #
         
     def getTensorValue(params, i, j):
