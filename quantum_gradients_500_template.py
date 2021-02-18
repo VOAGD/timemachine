@@ -33,14 +33,12 @@ def natural_gradient(params):
 
     # QHACK #
     tensor = np.zeroes([6,6])
+    gradient = np.zeroes([6,])
     
     @qml.qnode(dev)
     def state(params):
         variational_circuit(params)
         return qml.probs()
-    A = np.array([[2,1,1],[1,1,1],[1,-1,2]])
-    Ainv = np.linalg.inv(A)
-        # QHACK #
         
     def getTensorValue(params, i, j):
         state = state(params)
@@ -58,10 +56,29 @@ def natural_gradient(params):
         params4[i], params4[j] = params[i] - np.pi/2, params[j] - np.pi/2
         
         return (1/8)*(-np.abs(np.dot(state.conj().T, state(params1)))**2 + np.abs(np.dot(state.conj().T, state(params2)))**2 + np.abs(np.dot(state.conj().T, state(params3)))**2 - np.abs(np.dot(state.conj().T, state(params4)))**2)
+    
+    def PST(w, i):
+        shifted_g = w.copy()
+        shifted_g[i] += np.pi/2
+        pst_g_plus = variational_circuit(shifted_g)
+        
+        shifted_g[i] -= np.pi
+        pst_g_minus = variational_circuit(shifted_g)
+        
+        return 0.5 * (pst_g_plus - pst_g_minus)
         
     for i in range(len(tensor)):
         for j in range(len(tensor)):
             tensor[i][j] = getTensorValue(params, i, j)
+            
+    for k in range(len(params)):
+        gradient[k] = PST(params, i)
+        
+    tensor_inv = np.linalg.inv(tensor)
+        
+    natural_grad = tensor.dot(gradient)
+    
+    # QHACK #
 
     return natural_grad
 
