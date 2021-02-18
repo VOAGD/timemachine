@@ -3,6 +3,8 @@
 import sys
 import pennylane as qml
 import numpy as np
+import time
+start_time = time.time()
 
 
 def variational_ansatz(params, wires):
@@ -42,32 +44,28 @@ def run_vqe(H):
     energy = 0
 
     # QHACK #
-#    print(H.wires)
-    if len(H.wires)==2:
-        size=(6,)
-    elif len(H.wires)==3:
-        size=(14,)
+    size = (2 ** (len(H.wires) + 1) - 2,)
+    
     dev0 = qml.device('default.qubit',wires=len(H.wires))
     # Initialize the quantum device
     np.random.seed(0)
     #params = np.random.uniform(low=-np.pi / 2, high=np.pi , size=size)
-    params = np.random.normal(0.01, 0.5, size)
+    params = np.random.uniform(0.05, 0.4, size)
     # Randomly choose initial parameters (how many do you need?)
-    cost_fn = qml.ExpvalCost(variational_ansatz, H, dev0)
+    cost_fn = qml.ExpvalCost(variational_ansatz, H, dev0, optimize=True)
     # Set up a cost function
     opt = qml.GradientDescentOptimizer(stepsize=0.05)
     # Set up an optimizer
 #    max_iterations=500
-    previous = '0'
+    previous = 0
     for i in range(500):
-        params = opt.step(cost_fn, params)
-        if previous != '0':
-            if round(float(cost_fn(params)), 8) == round(float(previous), 8):
-                break
-            previous = '0'
-            
+        previous = energy
+        params, energy = opt.step_and_cost(cost_fn, params)
         if i % 25 == 0:
-            previous = cost_fn(params)
+            if round(energy, 7) == round(previous, 7):
+                break
+            print(energy)
+            
     energy = cost_fn(params)
     '''n=0
     while True:
@@ -180,4 +178,5 @@ if __name__ == "__main__":
     # Send Hamiltonian through VQE routine and output the solution
     ground_state_energy = run_vqe(H)
     print(f"{ground_state_energy:.6f}")
+    print(time.time()-start_time)
 
