@@ -6,7 +6,6 @@ import numpy as np
 import time
 start_time = time.time()
 
-
 def variational_ansatz(params, wires):
     """The variational ansatz circuit.
 
@@ -23,29 +22,41 @@ def variational_ansatz(params, wires):
     """
 
     # QHACK #
+    #qml.templates.layers.StronglyEntanglingLayers(params,wires=wires)
     qml.templates.state_preparations.ArbitraryStatePreparation(params,wires=wires)
-    '''n_qubits = len(wires)
-    n_rotations = len(params)
-
-    if n_rotations > 1:
-        n_layers = n_rotations // n_qubits
+    #n_qubits = len(wires)
+    #n_rotations = len(params)
+    '''print(wires)
+    print(params)
+    for i in wires:
+        print(params[i])
+        qml.Rot(*params[i], wires=i)'''
+    
+    #if n_rotations > 1:
+    '''n_layers = n_rotations // n_qubits
         n_extra_rots = n_rotations - n_layers * n_qubits
 
-        # Alternating layers of unitary rotations on every qubit followed by a
-        # ring cascade of CNOTs.
         for layer_idx in range(n_layers):
             layer_params = params[layer_idx * n_qubits : layer_idx * n_qubits + n_qubits, :]
             qml.broadcast(qml.Rot, wires, pattern="single", parameters=layer_params)
-            qml.broadcast(qml.CNOT, wires, pattern="ring")
-
-        # There may be "extra" parameter sets required for which it's not necessarily
-        # to perform another full alternating cycle. Apply these to the qubits as needed.
-        extra_params = params[-n_extra_rots:, :]
-        extra_wires = wires[: n_qubits - 1 - n_extra_rots : -1]
-        qml.broadcast(qml.Rot, extra_wires, pattern="single", parameters=extra_params)
-    else:
-        # For 1-qubit case, just a single rotation to the qubit
-        qml.Rot(*params[0], wires=wires[0])'''
+            qml.broadcast(qml.CNOT, wires, pattern="ring")'''
+        #qml.PauliX(1)
+        #print(wires)
+        #for i in wires:
+        #    qml.Rot(*params[i], wires=i)
+    '''
+        qml.CNOT(wires=[1,0])
+        qml.CNOT(wires=[1,0])
+        qml.CNOT(wires=[0,1])
+        qml.CNOT(wires=[0,1])'''
+        #qml.CNOT(wires=[1,2])
+        #qml.CNOT(wires=[2,0])
+        #qml.CNOT(wires=[2,0])
+        #qml.CNOT(wires=[3,1])
+        
+    #else:
+    #    qml.Rot(*params[0], wires=wires[0])
+    
     # QHACK #
 
 
@@ -64,27 +75,39 @@ def run_vqe(H):
     energy = 0
 
     # QHACK #
-    size = (2 ** (len(H.wires) + 1) - 2,)
+    size = (2 ** (len(H.wires) + 1) - 2,)#len(H.wires),3)
     
-    dev0 = qml.device('default.qubit',wires=len(H.wires))
+    dev = qml.device('default.qubit',wires=len(H.wires))
     # Initialize the quantum device
     np.random.seed(0)
     #params = np.random.uniform(low=-np.pi / 2, high=np.pi , size=size)
-    params = np.random.uniform(0.01, 0.5, size)
+    params = np.random.normal(0.001, 0.01, size)
+    #params = np.random.normal(0.01, np.pi, size)
+    
     # Randomly choose initial parameters (how many do you need?)
-    cost_fn = qml.ExpvalCost(variational_ansatz, H, dev0, optimize=True)
+    cost_fn = qml.ExpvalCost(variational_ansatz, H, dev, optimize=True)
+    
     # Set up a cost function
-    opt = qml.GradientDescentOptimizer(stepsize=0.05)
+    #opt = qml.GradientDescentOptimizer(stepsize=0.01)
+    opt = qml.AdagradOptimizer(stepsize=0.2)
     # Set up an optimizer
+    
 #    max_iterations=500
-    previous = 0
-    for i in range(500):
-        previous = energy
-        params, energy = opt.step_and_cost(cost_fn, params)
-        if i % 25 == 0:
-            if round(energy, 7) == round(previous, 7):
-                break
-            print(energy)
+    #previous = 0
+    #for i in range(500):
+    #index = 0
+    while True:
+        #previous = energy
+        params = opt.step(cost_fn, params)
+        
+        if time.time() - start_time > 55:
+            break
+        #if index % 25 == 0:
+            #if round(energy, 7) == round(previous, 7):
+            #    break
+            #print(energy)
+            #print(i)
+        #index += 1
             
     energy = cost_fn(params)
     '''n=0
@@ -198,5 +221,4 @@ if __name__ == "__main__":
     # Send Hamiltonian through VQE routine and output the solution
     ground_state_energy = run_vqe(H)
     print(f"{ground_state_energy:.6f}")
-    print(time.time()-start_time)
-
+    #print(time.time()-start_time)
