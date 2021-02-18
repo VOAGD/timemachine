@@ -58,30 +58,30 @@ def run_vqe(H):
     opt = qml.GradientDescentOptimizer(stepsize=0.1)
     # Set up an optimizer
 #    max_iterations=500
-    n=0
-    while True:
-        params = opt.step(cost_fn, params)
-        prev = float(energy)
-        energy = cost_fn(params)
-        if n%20==0:
-            print(energy)
-        if round(float(energy), 8) == round(float(prev), 8) or n == 500:
-            break
-        n+=1
+#    n=0
+#    while True:
+#        params = opt.step(cost_fn, params)
+#        prev = float(energy)
+#        energy = cost_fn(params)
+#        if n%20==0:
+#            print(energy)
+#        if round(float(energy), 8) == round(float(prev), 8) or n == 500:
+#            break
+#        n+=1
 
-#    conv_tol = 1e-06
+    conv_tol = 1e-06
     
 #    print(params)
-#    for n in range(max_iterations):
-#        params, prev_energy = opt.step_and_cost(cost_fn, params)
-#        energy = cost_fn(params)
-#        conv = np.abs(energy - prev_energy)
+    for n in range(max_iterations):
+        params, prev_energy = opt.step_and_cost(cost_fn, params)
+        energy = cost_fn(params)
+        conv = np.abs(energy - prev_energy)
 
-#        if n % 20 == 0:
-#            print('Iteration = {:},  Energy = {:.8f} Ha'.format(n, energy))
+        if n % 20 == 0:
+            print('Iteration = {:},  Energy = {:.8f} Ha'.format(n, energy))
 
-#        if conv <= conv_tol:
-#            break
+        if conv <= conv_tol:
+            break
     # Run the VQE by iterating over many steps of the optimizer
     # QHACK #
     return energy
