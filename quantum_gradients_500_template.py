@@ -76,7 +76,7 @@ def natural_gradient(params):
         
     tensor_inv = np.linalg.inv(tensor)
         
-    natural_grad = tensor.dot(gradient)
+    natural_grad = tensor_inv.dot(gradient)
     
     # QHACK #
 
