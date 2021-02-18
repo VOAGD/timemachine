@@ -38,7 +38,7 @@ def natural_gradient(params):
     @qml.qnode(dev)
     def state(params):
         variational_circuit(params)
-        return qml.probs()
+        return qml.probs([0, 1, 2])
         
     def getTensorValue(params, i, j, qstate):
         
