@@ -58,7 +58,18 @@ def run_vqe(H):
     opt = qml.GradientDescentOptimizer(stepsize=0.05)
     # Set up an optimizer
 #    max_iterations=500
-    n=0
+    previous = '0'
+    for i in range(500):
+        params = opt.step(cost_fn, params)
+        if previous != '0':
+            if round(float(cost_fn(params)), 8) == round(float(previous), 8):
+                break
+            previous = '0'
+            
+        if i % 25 == 0:
+            previous = cost_fn(params)
+    energy = cost_fn(params)
+    '''n=0
     while True:
         params = opt.step(cost_fn, params)
         prev = float(energy)
@@ -67,7 +78,7 @@ def run_vqe(H):
         #    print(energy)
         if round(float(energy), 8) == round(prev, 8) or n == 500:
             break
-        n+=1
+        n+=1'''
 
 #    conv_tol = 1e-06
     
