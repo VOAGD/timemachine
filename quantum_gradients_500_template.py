@@ -48,6 +48,7 @@ def natural_gradient(params):
             for j in range(2):
                 for k in range(2):
                     qstate[index] = prob0[i] @ prob1[j] @ prob2[k]
+                    index += 1
         
         return qstate
         
