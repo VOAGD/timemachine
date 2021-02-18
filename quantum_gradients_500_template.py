@@ -44,9 +44,9 @@ def natural_gradient(params):
         prob2 = probabs(params, 2)
         
         index = 0
-        for i in range(len(prob0)):
-            for j in range(len(prob1)):
-                for k in range(len(prob2)):
+        for i in range(2):
+            for j in range(2):
+                for k in range(2):
                     qstate[index] = prob0[i] @ prob1[j] @ prob2[k]
         
         return qstate
