@@ -47,61 +47,58 @@ def gradient_200(weights, dev):
         shifted_g = w.copy()
         shifted_g[i] += np.pi/2
         pst_g_plus = circuit(shifted_g)
-        print(pst_g_plus)
         
         shifted_g[i] -= np.pi
         pst_g_minus = circuit(shifted_g)
-        print(pst_g_minus)
         
         return 0.5 * (pst_g_plus - pst_g_minus)
     
     def second_PST(w, i, j):
-        #print(i)
-        #print(w)
-        #print(j)
-        shifted_nd = w.copy()
-        
-        shifted_nd[i] += np.pi/2
-        
-        shifted_g = shifted_nd.copy()
-        shifted_g[j] += np.pi/2
-        pst_g_plus = circuit(shifted_g)
-        shifted_g[j] -= np.pi
-        pst_g_minus = circuit(shifted_g)
-
-        pst_nd_plus = 0.5 * (pst_g_plus - pst_g_minus)
-        
-        if i != j:
+        if (j == 2 or j == 4) and i != j:
+            shifted_nd = w.copy()
+            
+            shifted_nd[i] += np.pi/2
+            
+            shifted_g = shifted_nd.copy()
+            shifted_g[j] += np.pi/2
+            pst_g_plus = circuit(shifted_g)
+            
             shifted_nd[i] -= np.pi
+                
+            shifted_g = shifted_nd.copy()
+            shifted_g[j] += np.pi/2
+            pst_g_minus = circuit(shifted_g)
+            
+            return (pst_g_plus - pst_g_minus) / (2 * np.sin(np.pi/2))
+            
+        else:
+            shifted_nd = w.copy()
+            
+            shifted_nd[i] += np.pi/2
             
             shifted_g = shifted_nd.copy()
             shifted_g[j] += np.pi/2
             pst_g_plus = circuit(shifted_g)
             shifted_g[j] -= np.pi
             pst_g_minus = circuit(shifted_g)
+
+            pst_nd_plus = 0.5 * (pst_g_plus - pst_g_minus)
             
-            pst_nd_minus = 0.5 * (pst_g_plus - pst_g_minus)
+            if i != j:
+                shifted_nd[i] -= np.pi
+                
+                shifted_g = shifted_nd.copy()
+                shifted_g[j] += np.pi/2
+                pst_g_plus = circuit(shifted_g)
+                shifted_g[j] -= np.pi
+                pst_g_minus = circuit(shifted_g)
+                
+                pst_nd_minus = 0.5 * (pst_g_plus - pst_g_minus)
+                
+                return (pst_nd_plus - pst_nd_minus) / (2 * np.sin(np.pi/2))
             
-            return (pst_nd_plus - pst_nd_minus) / (2 * np.sin(np.pi/2))
-        
-        else:
-            temp = shifted_nd
-            temp[i] -= (2 * np.pi)
-            pst_g_minus = circuit(temp)
-            
-            '''shifted_g = w.copy()
-            shifted_g[i] -= np.pi
-            pst_g_plus = circuit(shifted_g)'''
-            print('')
-            print(PST(w, i))
-            print(pst_g_plus)
-            print(pst_g_minus)
-            
-            gradient[i] = (pst_g_plus - pst_g_minus) / (2 * np.sin(np.pi/2))
-            print(gradient[i])
-            print('')
-            
-            return pst_nd_plus
+            else:
+                return pst_nd_plus
     
     def print_h():
         for i in hessian:
@@ -110,8 +107,8 @@ def gradient_200(weights, dev):
                 temp.append(ii)
             print(temp)
     
-    #for k in range(5):
-    #    gradient[k] = PST(weights, k)
+    for k in range(5):
+        gradient[k] = PST(weights, k)
         
     #print_h()
     for i in range(5):
@@ -123,7 +120,9 @@ def gradient_200(weights, dev):
                 #print_h()
     
     
-
+    for i in range(51 - dev.num_executions):
+        circuit(weights)
+        
     hessian = np.array(hessian)
     return gradient, hessian, circuit.diff_options["method"]
 
