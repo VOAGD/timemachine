@@ -105,7 +105,7 @@ def natural_gradient(params):
     gradient0=qml.grad(qnode)
     
     gradient = gradient0(params)        
-    print(gradient0)
+    print(gradient)
 
         
     tensor_inv = np.linalg.inv(tensor)
