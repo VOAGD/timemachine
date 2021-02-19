@@ -70,10 +70,10 @@ def natural_gradient(params):
         params4 = params.copy()
         params4[i], params4[j] = params[i] - np.pi/2, params[j] - np.pi/2
         
-        answer = ((-(np.abs(np.dot(qstate.conj().T, state(params1))))**2
-                         +(np.abs(np.dot(qstate.conj().T, state(params2))))**2
-                         +(np.abs(np.dot(qstate.conj().T, state(params3))))**2
-                         -(np.abs(np.dot(qstate.conj().T, state(params4))))**2)/8)
+        answer = ((-(np.abs(np.vdot(qstate, state(params1))))**2
+                         +(np.abs(np.vdot(qstate, state(params2))))**2
+                         +(np.abs(np.vdot(qstate, state(params3))))**2
+                         -(np.abs(np.vdot(qstate, state(params4))))**2)/8)
     
         return answer
     
@@ -105,7 +105,7 @@ def natural_gradient(params):
         
     tensor_inv = np.linalg.inv(tensor)
         
-    natural_grad = tensor_inv.dot(gradient)
+    natural_grad = np.matmul(tensor_inv, gradient)
     # QHACK #
 
     return natural_grad
