@@ -32,7 +32,7 @@ def natural_gradient(params):
     natural_grad = np.zeros(6)
     
     # QHACK #
-     @qml.qnode(dev)
+    @qml.qnode(dev)
     def probabs(params, i):
         variational_circuit(params)
         return qml.probs(int(i))
