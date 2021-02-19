@@ -59,6 +59,13 @@ def find_excited_states(H):
 
         if float(energy) == float(prev_energy) or n == 100:
             break
+            
+        gs = energy
+        
+        excited_f_state = (np.linalg.multi_dot(gs, qml.Hamiltonian, gs)) / np.vdot(gs, gs)
+        
+        excited_s_state = (np.linalg.multi_dot(excited_f_state, qml.Hamiltonian, excited_f_state)) / np.vdot(excited_f_state, excited_f_state)
+    
 
 
 
