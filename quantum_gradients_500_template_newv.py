@@ -103,17 +103,15 @@ def natural_gradient(params):
 #    for i in range(6):
 #        gradient[i][j] = PST(params, i)
     
-    gradient0 = qml.grad(qnode, argnum=[0])
+    gradient0 = qml.grad(qnode, argnum=0)
     
     gradient = gradient0(params)
-    print(gradient)
+    #print(gradient)
 
         
-    tensor_inv = np.linalg.inv(tensor)
+#    tensor_inv = np.linalg.inv(tensor)
     a=np.linalg.inv(qml.metric_tensor(qnode)(params))
-    gradient = qml.grad(qnode,argnum=2)
-    print(a,'\n',gradient)
-    #natural_grad = np.matmul(a, gradient)
+    natural_grad = np.matmul(a, gradient)
     # QHACK #
 
     return natural_grad
