@@ -30,7 +30,7 @@ def natural_gradient(params):
     """
 
     natural_grad = np.zeros(6)
-
+    
     # QHACK #
     @qml.qnode(dev)
     def probabs(params, i):
@@ -48,7 +48,7 @@ def natural_gradient(params):
         for i in range(2):
             for j in range(2):
                 for k in range(2):
-                    qstate[index] = prob0[i] @ prob1[j] @ prob2[k]
+                    qstate[index] = (prob0[i] * prob1[j] * prob2[k])
                     index += 1
         
         return qstate
@@ -67,7 +67,12 @@ def natural_gradient(params):
         params4 = params.copy()
         params4[i], params4[j] = params[i] - np.pi/2, params[j] - np.pi/2
         
-        return (1/8)*(-np.abs(np.dot(qstate.conj().T, state(params1)))**2 + np.abs(np.dot(qstate.conj().T, state(params2)))**2 + np.abs(np.dot(qstate.conj().T, state(params3)))**2 - np.abs(np.dot(qstate.conj().T, state(params4)))**2)
+        answer = ((1/8)*(-np.abs(np.dot(qstate.conj().T, state(params1)))**2
+                         +np.abs(np.dot(qstate.conj().T, state(params2)))**2
+                         +np.abs(np.dot(qstate.conj().T, state(params3)))**2
+                         -np.abs(np.dot(qstate.conj().T, state(params4)))**2))
+    
+        return answer
     
     def PST(w, i):
         shifted_g = w.copy()
@@ -77,16 +82,26 @@ def natural_gradient(params):
         shifted_g[i] -= np.pi
         pst_g_minus = qnode(shifted_g)
         
-        return (pst_g_plus - pst_g_minus)/(2* np.sin(pi/2))
+        return (pst_g_plus - pst_g_minus)/(2* np.sin(np.pi/2))
     
     qstate = state(params)
+    #print(qstate)
+    #func = qml.metric_tensor(dev)
+    #print(func())
+    tensor = [[0,0,0,0,0,0],
+              [0,0,0,0,0,0],
+              [0,0,0,0,0,0],
+              [0,0,0,0,0,0],
+              [0,0,0,0,0,0],
+              [0,0,0,0,0,0]]
     
-    for i in range(len(tensor)):
-        for j in range(len(tensor)):
+    for i in range(6):
+        for j in range(6):
             tensor[i][j] = getTensorValue(params, i, j, qstate)
-            
-    for k in range(len(params)):
-        gradient[k] = PST(params, i)
+    
+    gradient = [0,0,0,0,0,0]
+    for i in range(6):
+        gradient[i] = PST(params, i)
         
     tensor_inv = np.linalg.inv(tensor)
         
