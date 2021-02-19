@@ -103,7 +103,9 @@ def natural_gradient(params):
 #    for i in range(6):
 #        gradient[i][j] = PST(params, i)
     
-    gradient = qml.grad(qnode, argnum=[0, 1, 2, 3, 4 , 5])
+    gradient0 = qml.grad(qnode, argnum=[0])
+    
+    gradient = gradient0(params)
     print(gradient)
 
         
