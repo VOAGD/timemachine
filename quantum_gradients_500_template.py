@@ -85,9 +85,6 @@ def natural_gradient(params):
         return (pst_g_plus - pst_g_minus)/(2* np.sin(np.pi/2))
     
     qstate = state(params)
-    #print(qstate)
-    #func = qml.metric_tensor(dev)
-    #print(func())
     tensor = [[0,0,0,0,0,0],
               [0,0,0,0,0,0],
               [0,0,0,0,0,0],
