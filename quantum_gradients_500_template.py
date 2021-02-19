@@ -48,8 +48,11 @@ def natural_gradient(params):
         for i in range(2):
             for j in range(2):
                 for k in range(2):
-                    qstate[index] = (prob0[i] * prob1[j] * prob2[k])
+                    qstate[index] = np.sqrt((prob0[i] * prob1[j] * prob2[k]))
                     index += 1
+        normalise = np.vdot(qstate, qstate)
+        normalise = 1/(np.sqrt(normalise))
+        qstate = normalise*qstate
         
         return qstate
         
@@ -67,10 +70,10 @@ def natural_gradient(params):
         params4 = params.copy()
         params4[i], params4[j] = params[i] - np.pi/2, params[j] - np.pi/2
         
-        answer = ((1/8)*(-np.abs(np.dot(qstate.conj().T, state(params1)))**2
-                         +np.abs(np.dot(qstate.conj().T, state(params2)))**2
-                         +np.abs(np.dot(qstate.conj().T, state(params3)))**2
-                         -np.abs(np.dot(qstate.conj().T, state(params4)))**2))
+        answer = ((-(np.abs(np.dot(qstate.conj().T, state(params1))))**2
+                         +(np.abs(np.dot(qstate.conj().T, state(params2))))**2
+                         +(np.abs(np.dot(qstate.conj().T, state(params3))))**2
+                         -(np.abs(np.dot(qstate.conj().T, state(params4))))**2)/8)
     
         return answer
     
@@ -103,7 +106,6 @@ def natural_gradient(params):
     tensor_inv = np.linalg.inv(tensor)
         
     natural_grad = tensor_inv.dot(gradient)
-    
     # QHACK #
 
     return natural_grad
